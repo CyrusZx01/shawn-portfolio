@@ -11,13 +11,14 @@ import { CameraRig } from "./CameraRig";
 import { Effects } from "./Effects";
 import { Lighting } from "./Lighting";
 import { SceneReady } from "./SceneReady";
+import { Worlds } from "./Worlds";
 
 export default function PortfolioScene() {
   return (
     <Canvas
       className="scene-canvas"
       dpr={[1, 1.75]}
-      camera={{ fov: GLB_FOV, near: 0.1, far: 100, position: [-0.564, 0.889, 3.525] }}
+      camera={{ fov: GLB_FOV, near: 0.05, far: 400, position: [-0.564, 0.889, 3.525] }}
       gl={{ antialias: false, powerPreference: "high-performance", toneMapping: THREE.NeutralToneMapping }}
       onCreated={({ gl, scene }) => {
         gl.setClearColor("#1d1d1d");
@@ -30,6 +31,7 @@ export default function PortfolioScene() {
       <Lighting />
       <Suspense fallback={null}>
         <Bust />
+        <Worlds />
         <CameraRig />
         <Effects />
         <SceneReady />

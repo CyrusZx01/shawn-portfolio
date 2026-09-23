@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import * as THREE from "three";
 import { useGLTF } from "@react-three/drei";
 
-export const MODEL_URL = "/models/portfolio.glb";
+export const MODEL_URL = `${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/models/portfolio.glb`;
 
 export type Decal = {
   name: string;
@@ -24,8 +24,20 @@ export type FocusMarker = {
  * the bust (`model`), the animated `Camera`, `CameraAction`, decals and focus markers. */
 export function usePortfolioModel() {
   const gltf = useGLTF(MODEL_URL);
-
   return useMemo(() => {
+    // Parsed once per GLTF: <primitive> re-parents `model` out of the scene, so a
+    // second lookup (remount, HMR, another consumer) would no longer find it.
+    let parts = cache.get(gltf);
+    if (!parts) cache.set(gltf, (parts = extract(gltf)));
+    return parts;
+  }, [gltf]);
+}
+
+type GLTFLike = ReturnType<typeof useGLTF> & { scene: THREE.Group; animations: THREE.AnimationClip[] };
+const cache = new WeakMap<object, ReturnType<typeof extract>>();
+
+function extract(gltf: GLTFLike) {
+  {
     const root = gltf.scene;
     root.updateMatrixWorld(true);
 
@@ -69,7 +81,7 @@ export function usePortfolioModel() {
     decals.sort((a, b) => a.name.localeCompare(b.name));
 
     return { root, model, camera, clip, decals, focus };
-  }, [gltf]);
+  }
 }
 
 useGLTF.preload(MODEL_URL);

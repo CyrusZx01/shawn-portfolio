@@ -16,10 +16,14 @@ export function LoadingScreen() {
   // Ease the counter so it never jumps straight from 0 to 100.
   useEffect(() => {
     let raf = 0;
-    const tick = () => {
+    let last = performance.now();
+    const tick = (now: number) => {
+      // time-based easing: heavy first frames (shader compile) must not stall the counter
+      const k = 1 - Math.exp(-Math.min(now - last, 250) / 130);
+      last = now;
       setShown((v) => {
         const target = loaded ? 100 : Math.min(progress, 96);
-        const next = v + (target - v) * 0.12;
+        const next = v + (target - v) * k;
         return Math.abs(target - next) < 0.5 ? target : next;
       });
       raf = requestAnimationFrame(tick);

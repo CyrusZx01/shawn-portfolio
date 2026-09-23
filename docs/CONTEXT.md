@@ -196,3 +196,9 @@ loading → hero → 滚动驱动相机沿路径 → 时间线 stop（相机位 
 **已知坑**：postprocessing 的 `ToneMapping(NEUTRAL)` 会把 #1d1d1d 压成近黑 → 已移除，勿加回。
 
 **TODO（视觉偏差，未调）**：见 README 同名清单。
+
+## 12. 第二轮（2026-09-23）
+- 丝滑滚动（自写 gsap 平滑滚动）、人物头+眼跟随鼠标（shader，无骨骼）、眨眼。
+- 项目区改为钉住轨道：接近 → 贴纸圆形转场 → 每个项目一个真 3D 世界（src/worlds/*），滚动驱动故事步骤，可拖拽环视。
+- /lab?w=<id>&p=<0..1> 单独调某个世界。世界标签统一用 src/worlds/Label.tsx。
+- 诚实标注：Homie 四足=概念，驾驶=示意，医疗=概念，Weather=演示数据。

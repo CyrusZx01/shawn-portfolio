@@ -6,6 +6,7 @@ import { NewChapter } from "@/sections/NewChapter";
 import { Outro, Projects } from "@/sections/Projects";
 import { Chrome } from "@/ui/Chrome";
 import { StickerTip } from "@/ui/StickerTip";
+import { Cover } from "@/ui/Cover";
 import { LoadingScreen } from "./LoadingScreen";
 import { ScrollDriver } from "./ScrollDriver";
 
@@ -17,6 +18,7 @@ export function Experience() {
     <>
       <div className="scene-layer" aria-hidden>
         <PortfolioScene />
+        <Cover />
       </div>
       <Chrome />
       <main className="content">

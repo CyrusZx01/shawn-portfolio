@@ -403,21 +403,189 @@ a {
 
 /* ---------- projects ---------- */
 
+.projects-track {
+  position: relative;
+}
+.project-anchor {
+  position: absolute;
+  left: 0;
+  width: 1px;
+  height: 1px;
+}
+.project-stage {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: hidden;
+}
 .project {
-  min-height: 120svh;
+  position: absolute;
+  inset: 0;
+  padding-inline: var(--gutter);
   display: flex;
   align-items: center;
+  pointer-events: none;
 }
+.project[data-state="hidden"] {
+  visibility: hidden;
+  transition: visibility 0s 0.7s;
+}
+
+/* approach: big title while the camera flies to the sticker */
+.project-intro {
+  position: absolute;
+  left: var(--gutter);
+  top: 50%;
+  translate: 0 -50%;
+  max-width: 40vw;
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s var(--ease-out), transform 0.8s var(--ease-out);
+}
+.project[data-state="approach"] .project-intro {
+  opacity: 1;
+  transform: none;
+}
+.project[data-state="dive"] .project-intro {
+  opacity: 0;
+  transform: translateY(-24px) scale(0.98);
+  transition-duration: 0.35s;
+}
+.project-intro-title {
+  font-size: clamp(56px, 7.2vw, 148px);
+  margin: 18px 0 20px;
+  line-height: 0.92;
+}
+.project-intro-hint {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+.project-intro-sticker {
+  color: var(--accent);
+  letter-spacing: 0.12em;
+}
+
 .project-card {
-  width: min(460px, 40vw);
-  padding: 34px 34px 30px;
+  width: min(440px, 36vw);
+  max-height: calc(100svh - 180px);
+  overflow: auto;
+  scrollbar-width: none;
+  padding: 30px 30px 26px;
   border-radius: 20px;
-  background: rgba(24, 24, 24, 0.62);
+  background: rgba(22, 22, 22, 0.86);
   border: 1px solid rgba(255, 255, 255, 0.07);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
+  opacity: 0;
+  transform: translateX(-28px);
+  transition: opacity 0.5s var(--ease-out), transform 0.9s var(--ease-out);
+}
+.project[data-state="world"] .project-card {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+  transition-delay: 0.15s;
+}
+
+/* story rail: the steps of the active world */
+.story-rail {
+  position: absolute;
+  left: calc(var(--gutter) + min(440px, 36vw) + 5vw);
+  right: calc(var(--gutter) + 40px);
+  bottom: 7svh;
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.5s var(--ease-out), transform 0.8s var(--ease-out);
+  pointer-events: none;
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.85), 0 0 2px rgba(0, 0, 0, 0.6);
+}
+.story-rail[data-visible="true"] {
+  opacity: 1;
+  transform: none;
+  transition-delay: 0.3s;
+}
+.story-rail[data-visible="true"] button {
   pointer-events: auto;
 }
+.story-caption {
+  margin: 0 0 18px;
+  max-width: 34em;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--fg);
+  animation: caption-in 0.7s var(--ease-out);
+}
+@keyframes caption-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+.story-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 4px 22px;
+  flex-wrap: wrap;
+}
+.story-steps button {
+  font-family: var(--font-text), sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+  display: inline-flex;
+  gap: 8px;
+  padding: 4px 0;
+  transition: color 0.3s;
+}
+.story-steps li[data-done="true"] button {
+  color: var(--fg-muted);
+}
+.story-steps li[data-on="true"] button,
+.story-steps button:hover {
+  color: var(--fg);
+}
+.story-step-index {
+  color: var(--accent);
+  opacity: 0.4;
+}
+.story-steps li[data-on="true"] .story-step-index {
+  opacity: 1;
+}
+.story-progress {
+  margin-top: 10px;
+  height: 1px;
+  background: var(--rule);
+  overflow: hidden;
+}
+.story-progress span {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  transform-origin: left;
+  transform: scaleX(0);
+}
+.story-hint {
+  margin-top: 12px;
+  font-size: 9px;
+  opacity: 0.6;
+}
+
+.cover {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  visibility: hidden;
+  will-change: opacity, clip-path;
+}
+.is-dragging,
+.is-dragging * {
+  cursor: grabbing !important;
+  user-select: none;
+}
+
 .project-meta {
   display: flex;
   gap: 14px;
@@ -627,9 +795,7 @@ a {
     bottom: 18svh;
     padding: 22px 22px 22px 34px;
     border-radius: 18px;
-    background: rgba(24, 24, 24, 0.7);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background: rgba(24, 24, 24, 0.88);
   }
   .timeline-dot {
     left: 14px;
@@ -649,11 +815,37 @@ a {
   }
   .project {
     align-items: flex-end;
-    padding-bottom: 12svh;
+    padding-bottom: 64px;
+  }
+  .project-intro {
+    top: auto;
+    bottom: 18svh;
+    translate: none;
+    max-width: none;
+    right: var(--gutter);
   }
   .project-card {
     width: 100%;
-    padding: 24px 22px 22px;
+    max-height: 42svh;
+    padding: 22px 20px 20px;
+    transform: translateY(28px);
+  }
+  .project-points {
+    display: none;
+  }
+  .story-rail {
+    left: var(--gutter);
+    right: var(--gutter);
+    top: 76px;
+    bottom: auto;
+  }
+  .story-caption {
+    font-size: 13px;
+    margin-bottom: 10px;
+  }
+  .story-steps,
+  .story-hint {
+    display: none;
   }
   .project-title {
     margin: 14px 0 10px;
@@ -667,4 +859,40 @@ a {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* ── In-world labels (drei <Html>) ───────────────────────────────────────── */
+.world-label {
+  font-family: var(--font-text), sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--fg);
+  padding: 5px 9px 5px 8px;
+  border-radius: 999px;
+  background: rgba(29, 29, 29, 0.78);
+  border: 1px solid rgba(243, 239, 233, 0.14);
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  pointer-events: none;
+  user-select: none;
+  transition: opacity 0.35s var(--ease-out);
+}
+.world-label::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent, var(--fg));
+  flex: none;
+}
+.world-label--plain::before {
+  display: none;
+}
+.world-label small {
+  color: var(--fg-dim);
+  letter-spacing: 0.16em;
+  font-size: 10px;
 }

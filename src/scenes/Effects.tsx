@@ -24,9 +24,10 @@ export function Effects() {
   useFrame((_, dt) => {
     const e = dof.current;
     if (!e) return;
-    const { stage, active } = getUi();
-    const on = marker?.dofEnabled || (stage === "projects" && active >= 0);
-    bokeh.current = THREE.MathUtils.damp(bokeh.current, on ? (marker?.dofBokeh ?? 4) * 0.6 : 0, 3, dt);
+    const { stage, active, phase } = getUi();
+    // Soft focus on sticker close-ups; worlds stay crisp (their scale differs from the bust's).
+    const on = (marker?.dofEnabled || (stage === "projects" && active >= 0)) && phase !== "world";
+    bokeh.current = phase === "world" ? 0 : THREE.MathUtils.damp(bokeh.current, on ? (marker?.dofBokeh ?? 4) * 0.6 : 0, 3, dt);
     e.bokehScale = bokeh.current;
     if (!e.target) e.target = new THREE.Vector3();
     e.target.copy(focusTarget);

@@ -1,6 +1,6 @@
 // Visual check: screenshot the running dev server at given scroll positions.
 // usage: node scripts/shoot.mjs <width> <height> <outPrefix> <scroll...>
-//   scroll = "0.33" (viewport heights) or "id:project-homie" (element top)
+//   scroll = "0.33" (viewport heights) or "id:project-homie" (element top) or "id:project-homie+1.5" (top + vh)
 import { chromium } from "playwright";
 
 const [, , w = 2200, h = 1136, out = "shots/shot", ...scrolls] = process.argv;
@@ -26,9 +26,10 @@ for (const s of scrolls.length ? scrolls : ["0"]) {
   const [mode, val] = s.includes(":") ? s.split(":") : ["vh", s];
   await page.evaluate(
     ([mode, val]) => {
+      const [id, off = "0"] = val.split("+");
       const y =
         mode === "id"
-          ? document.getElementById(val).getBoundingClientRect().top + scrollY
+          ? document.getElementById(id).getBoundingClientRect().top + scrollY + +off * innerHeight
           : +val * innerHeight;
       window.scrollTo(0, y);
     },
