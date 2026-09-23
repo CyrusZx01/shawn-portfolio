@@ -1,11 +1,9 @@
 import * as THREE from "three";
-import { DIM, SCREEN_YELLOW } from "./parts";
+import { SCREEN_YELLOW } from "./parts";
 
 // Homie's face: yellow stacked-bar eyes drawn in a shader (so they can look, blink
 // and bounce every frame for free) + a subtitle line from a small canvas that is only
 // redrawn when the typed text changes.
-
-const ASPECT = DIM.screen[0] / DIM.screen[1];
 
 export function createSubtitle() {
   const canvas = document.createElement("canvas");
@@ -41,7 +39,8 @@ export function createSubtitle() {
   return { texture, draw };
 }
 
-export function createScreenMaterial(text: THREE.Texture) {
+/** `aspect` = screen width / height (the eyes and subtitle are laid out in height units). */
+export function createScreenMaterial(text: THREE.Texture, aspect: number) {
   return new THREE.ShaderMaterial({
     toneMapped: false,
     uniforms: {
@@ -51,7 +50,6 @@ export function createScreenMaterial(text: THREE.Texture) {
       uBars: { value: 0 },
       uPower: { value: 1 },
       uFlash: { value: 0 },
-      uProgress: { value: -1 },
       uYellow: { value: new THREE.Color(SCREEN_YELLOW) },
       uCream: { value: new THREE.Color("#f6efe2") },
       uText: { value: text },
@@ -64,7 +62,7 @@ export function createScreenMaterial(text: THREE.Texture) {
       }
     `,
     fragmentShader: /* glsl */ `
-      uniform float uTime, uOpen, uBars, uPower, uFlash, uProgress;
+      uniform float uTime, uOpen, uBars, uPower, uFlash;
       uniform vec2 uLook;
       uniform vec3 uYellow, uCream;
       uniform sampler2D uText;
@@ -75,30 +73,30 @@ export function createScreenMaterial(text: THREE.Texture) {
         return length(max(q, 0.0)) + min(max(q.x, q.y), 0.0) - r;
       }
 
-      // one eye = four stacked bars, wider in the middle so the stack reads as an oval
+      // one eye = four equal pill bars stacked tight (poster)
       float eye(vec2 p, float seed) {
         float d = 1e3;
         for (int i = 0; i < 4; i++) {
           float fi = float(i);
-          float y = (fi - 1.5) * 0.074 * uOpen;
-          float w = (i == 0 || i == 3) ? 0.058 : 0.088;
+          float y = (fi - 1.5) * 0.084 * uOpen;
+          float w = 0.1;
           w *= 1.0 + 0.32 * uBars * sin(uTime * 9.0 + fi * 1.9 + seed * 2.3);
-          float h = 0.022 * uOpen + 0.005;
-          d = min(d, sdBox(p - vec2(0.0, y), vec2(w, h), 0.018));
+          float h = 0.03 * uOpen + 0.004;
+          d = min(d, sdBox(p - vec2(0.0, y), vec2(w, h), h));
         }
         return d;
       }
 
       void main() {
-        vec2 p = (vUv - 0.5) * vec2(${ASPECT.toFixed(4)}, 1.0);
+        vec2 p = (vUv - 0.5) * vec2(${aspect.toFixed(4)}, 1.0);
         vec2 look = uLook * vec2(0.075, 0.045);
 
         // screen ground: near-black with a soft centre lift
         vec3 col = vec3(0.004, 0.0045, 0.0055) + 0.012 * (1.0 - length(p) * 1.3);
 
         vec2 eyeC = vec2(0.0, 0.085) + look;
-        float dl = eye(p - eyeC - vec2(-0.215, 0.0), 0.0);
-        float dr = eye(p - eyeC - vec2(0.215, 0.0), 1.0);
+        float dl = eye(p - eyeC - vec2(-0.2, 0.0), 0.0);
+        float dr = eye(p - eyeC - vec2(0.2, 0.0), 1.0);
         float d = min(dl, dr);
         float aa = fwidth(d) * 0.8;
         float fill = 1.0 - smoothstep(-aa, aa, d);
@@ -112,13 +110,6 @@ export function createScreenMaterial(text: THREE.Texture) {
           col = mix(col, uCream * 1.1, t.a * uPower);
         }
 
-        // progress bar (used while switching stance)
-        if (uProgress >= 0.0) {
-          float bar = sdBox(p - vec2(0.0, -0.13), vec2(0.36, 0.008), 0.008);
-          float fillBar = step(p.x, -0.36 + 0.72 * uProgress);
-          float inBar = 1.0 - smoothstep(-0.002, 0.002, bar);
-          col += mix(vec3(0.03), uYellow * 1.2, fillBar) * inBar;
-        }
 
         // scanlines + glass sheen + flash
         col *= 0.93 + 0.07 * sin(vUv.y * 420.0);
@@ -127,7 +118,7 @@ export function createScreenMaterial(text: THREE.Texture) {
         col += uYellow * uFlash * 0.6;
 
         // rounded screen corners
-        float edge = sdBox(p, vec2(${(ASPECT / 2).toFixed(4)}, 0.5), 0.07);
+        float edge = sdBox(p, vec2(${(aspect / 2).toFixed(4)}, 0.5), 0.07);
         col *= 1.0 - smoothstep(-0.01, 0.0, edge);
 
         gl_FragColor = vec4(col, 1.0);

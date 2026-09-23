@@ -32,10 +32,10 @@ export const PAIRS = [
 export function makeLegs(): Leg[] {
   const spec: [number, number, number, number, number, 1 | -1, 1 | -1][] = [
     // hip x, hip z, rest x, rest z, hip y, side, front
-    [0.5, 0.2, 1.08, 0.78, -0.04, 1, 1],
-    [-0.5, 0.2, -1.08, 0.78, -0.04, -1, 1],
-    [0.45, -0.5, 1.02, -1.0, -0.04, 1, -1],
-    [-0.45, -0.5, -1.02, -1.0, -0.04, -1, -1],
+    [0.5, 0.29, 0.9, 0.68, 0, 1, 1],
+    [-0.5, 0.29, -0.9, 0.68, 0, -1, 1],
+    [0.5, -0.29, 0.9, -0.68, 0, 1, -1],
+    [-0.5, -0.29, -0.9, -0.68, 0, -1, -1],
   ];
   return spec.map(([hx, hz, rx, rz, hy, side, front]) => ({
     hip: new THREE.Vector3(hx, hy, hz),
