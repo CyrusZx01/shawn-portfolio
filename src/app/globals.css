@@ -35,7 +35,7 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--fg);
-  font-family: var(--font-text), "Helvetica Neue", Arial, sans-serif;
+  font-family: var(--font-text), "Helvetica Neue", Arial, "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", "Microsoft YaHei", sans-serif;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }
@@ -62,7 +62,7 @@ a {
 /* ---------- type ---------- */
 
 .eyebrow {
-  font-family: var(--font-text), sans-serif;
+  font-family: var(--font-text), "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", "Microsoft YaHei", sans-serif;
   font-size: var(--eyebrow);
   font-weight: 400;
   letter-spacing: 0.32em;
@@ -73,7 +73,7 @@ a {
 }
 
 .display {
-  font-family: var(--font-display), "Helvetica Neue", Arial, sans-serif;
+  font-family: var(--font-display), "Helvetica Neue", Arial, "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", "Microsoft YaHei", sans-serif;
   font-weight: 400;
   font-size: var(--display);
   line-height: 0.95;
@@ -323,7 +323,7 @@ a {
   font-size: 13px;
 }
 .timeline-title {
-  font-family: var(--font-display), sans-serif;
+  font-family: var(--font-display), "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", "Microsoft YaHei", sans-serif;
   font-weight: 600;
   font-size: 26px;
   letter-spacing: -0.01em;
@@ -530,7 +530,7 @@ a {
   flex-wrap: wrap;
 }
 .story-steps button {
-  font-family: var(--font-text), sans-serif;
+  font-family: var(--font-text), "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", "Microsoft YaHei", sans-serif;
   font-size: 10px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
@@ -599,7 +599,7 @@ a {
   margin-left: auto;
 }
 .project-title {
-  font-family: var(--font-display), sans-serif;
+  font-family: var(--font-display), "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", "Microsoft YaHei", sans-serif;
   font-weight: 400;
   font-size: clamp(38px, 3.6vw, 64px);
   letter-spacing: -0.03em;
@@ -744,7 +744,7 @@ a {
   width: min(520px, 100%);
 }
 .loader-count {
-  font-family: var(--font-display), sans-serif;
+  font-family: var(--font-display), "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", "Microsoft YaHei", sans-serif;
   font-weight: 300;
   font-size: clamp(64px, 9vw, 160px);
   letter-spacing: -0.04em;
@@ -762,6 +762,54 @@ a {
   height: 100%;
   background: var(--fg);
   transform-origin: left;
+}
+
+/* ---------- language switch ---------- */
+
+.chrome-top-right {
+  display: flex;
+  align-items: flex-end;
+  gap: 22px;
+}
+.lang-switch {
+  display: flex;
+  gap: 2px;
+  margin-bottom: -3px;
+  padding: 2px;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  pointer-events: auto;
+}
+.lang-switch button {
+  min-width: 34px;
+  padding: 4px 9px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--fg-dim);
+  font: 500 11px/1.2 var(--font-text), "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: color 0.25s, background 0.25s;
+}
+.lang-switch button:hover {
+  color: var(--fg);
+}
+.lang-switch button[data-on="true"] {
+  background: var(--fg);
+  color: var(--bg);
+}
+.lang-switch button:focus-visible {
+  outline: 1px solid var(--fg);
+  outline-offset: 2px;
+}
+
+/* Chinese reads better without the wide Latin tracking */
+html[lang="zh-CN"] .eyebrow {
+  letter-spacing: 0.14em;
+}
+html[lang="zh-CN"] .display {
+  letter-spacing: 0.02em;
 }
 
 /* ---------- responsive ---------- */
@@ -863,7 +911,7 @@ a {
 
 /* ── In-world labels (drei <Html>) ───────────────────────────────────────── */
 .world-label {
-  font-family: var(--font-text), sans-serif;
+  font-family: var(--font-text), "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", "Microsoft YaHei", sans-serif;
   font-size: 10px;
   letter-spacing: 0.24em;
   text-transform: uppercase;

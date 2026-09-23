@@ -26,6 +26,8 @@ if (process.env.STATIC) {
     }
   });
 }
+// LANG=zh starts with the Chinese copy (as if the visitor had picked it before)
+if (process.env.LANG_PICK) await page.addInitScript((l) => localStorage.setItem("lang", l), process.env.LANG_PICK);
 const logs = [];
 page.on("console", (m) => {
   if (["error", "warning"].includes(m.type())) logs.push(`${m.type()}: ${m.text()}`);

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { chapter, projects } from "./content";
+import { useContent } from "./content";
 import { scrollToId } from "@/animations/scrollTo";
 import { setUi } from "@/animations/store";
 import { ArrowIcon } from "@/ui/icons";
@@ -11,6 +11,7 @@ const EASE = [0.22, 1, 0.36, 1] as const;
 /** The reference's "A New Chapter" timeline stop, rebuilt as the entry point
  * into the projects: CTA + one chip per sticker on the bust. */
 export function NewChapter() {
+  const { chapter, projects, ui } = useContent();
   return (
     <section id="chapter" className="section chapter">
       <motion.div
@@ -31,7 +32,7 @@ export function NewChapter() {
           <ArrowIcon />
         </button>
 
-        <ul className="sticker-chips" aria-label="Jump to a project">
+        <ul className="sticker-chips" aria-label={ui.chipsLabel}>
           {projects.map((p, i) => (
             <li key={p.id}>
               <button
@@ -50,7 +51,7 @@ export function NewChapter() {
             </li>
           ))}
         </ul>
-        <p className="timeline-hint eyebrow">Tip — tap a sticker on my face</p>
+        <p className="timeline-hint eyebrow">{ui.tip}</p>
       </motion.div>
     </section>
   );

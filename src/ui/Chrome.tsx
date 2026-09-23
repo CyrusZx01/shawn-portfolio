@@ -1,7 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { identity, projects } from "@/sections/content";
+import { useContent } from "@/sections/content";
+import { setLang, useLang, type Lang } from "@/i18n/lang";
 import { useUi } from "@/animations/store";
 import { scrollToId } from "@/animations/scrollTo";
 
@@ -14,6 +15,7 @@ export function Chrome() {
   const stage = useUi((s) => s.stage);
   const active = useUi((s) => s.active);
   const hidden = useUi((s) => s.chromeHidden);
+  const { identity, projects, ui } = useContent();
 
   const visible = loaded && !hidden;
   const show = { opacity: visible ? 1 : 0, y: visible ? 0 : -8 };
@@ -38,7 +40,10 @@ export function Chrome() {
           <br />
           {identity.role}
         </a>
-        <span className="eyebrow">{identity.edition}</span>
+        <div className="chrome-top-right">
+          <span className="eyebrow">{identity.edition}</span>
+          <LangSwitch label={ui.language} />
+        </div>
       </motion.header>
 
       <motion.span
@@ -52,7 +57,7 @@ export function Chrome() {
 
       <motion.nav
         className="chrome-index"
-        aria-label="Projects"
+        aria-label={ui.projectsNav}
         initial={false}
         animate={{ opacity: stage === "projects" ? 1 : 0, x: stage === "projects" ? 0 : 12 }}
         transition={{ duration: 0.6, ease: EASE }}
@@ -79,6 +84,33 @@ export function Chrome() {
         animate={{ scaleX: loaded ? 1 : 0 }}
         transition={{ duration: 1.4, ease: EASE, delay: 0.3 }}
       />
+    </div>
+  );
+}
+
+const LANGS: [Lang, string, string][] = [
+  ["en", "EN", "English"],
+  ["zh", "中", "中文"],
+];
+
+/** EN / 中 toggle, top right. */
+function LangSwitch({ label }: { label: string }) {
+  const lang = useLang();
+  return (
+    <div className="lang-switch" role="group" aria-label={label}>
+      {LANGS.map(([id, short, full]) => (
+        <button
+          key={id}
+          type="button"
+          lang={id === "zh" ? "zh-CN" : "en"}
+          aria-label={full}
+          aria-pressed={lang === id}
+          data-on={lang === id}
+          onClick={() => setLang(id)}
+        >
+          {short}
+        </button>
+      ))}
     </div>
   );
 }

@@ -3,11 +3,12 @@
 import { useEffect, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useUi } from "@/animations/store";
-import { projects } from "@/sections/content";
+import { useContent } from "@/sections/content";
 
 /** Cursor-following label shown while hovering a sticker on the bust. */
 export function StickerTip() {
   const hovered = useUi((s) => s.hovered);
+  const { projects } = useContent();
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

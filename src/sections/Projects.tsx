@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { motion } from "framer-motion";
-import { projects, identity } from "./content";
+import { projects, useContent } from "./content";
 import { scrollToId, scrollToProject } from "@/animations/scrollTo";
 import { T } from "@/animations/projectTimeline";
 import { scroll, useUi } from "@/animations/store";
@@ -41,6 +41,7 @@ export function Projects() {
 }
 
 function ProjectPanel({ index }: { index: number }) {
+  const { projects, ui } = useContent();
   const p = projects[index];
   const state = useUi((s) =>
     s.stage !== "projects" || s.active !== index ? "hidden" : s.phase === "world" ? "world" : s.phase,
@@ -60,7 +61,7 @@ function ProjectPanel({ index }: { index: number }) {
         </p>
         <h2 className="display project-intro-title">{p.title}</h2>
         <p className="eyebrow project-intro-hint">
-          <span className="project-intro-sticker">“{p.sticker}”</span> Scroll to dive in
+          <span className="project-intro-sticker">“{p.sticker}”</span> {ui.diveIn}
         </p>
       </header>
 
@@ -77,7 +78,7 @@ function ProjectPanel({ index }: { index: number }) {
             <li key={pt}>{pt}</li>
           ))}
         </ul>
-        <ul className="project-stack" aria-label="Stack">
+        <ul className="project-stack" aria-label={ui.stack}>
           {p.stack.map((s) => (
             <li key={s}>{s}</li>
           ))}
@@ -86,11 +87,11 @@ function ProjectPanel({ index }: { index: number }) {
         <div className="project-nav">
           {next ? (
             <button type="button" className="text-link" onClick={() => scrollToProject(index + 1)}>
-              Next · {next.title} <ArrowIcon />
+              {ui.next} · {next.title} <ArrowIcon />
             </button>
           ) : (
             <button type="button" className="text-link" onClick={() => scrollToId("contact")}>
-              Say hello <ArrowIcon />
+              {ui.sayHello} <ArrowIcon />
             </button>
           )}
         </div>
@@ -101,6 +102,7 @@ function ProjectPanel({ index }: { index: number }) {
 
 /** Story steps of the active world, with a live progress line. */
 function StoryRail() {
+  const { projects, ui, steps } = useContent();
   const active = useUi((s) => s.active);
   const visible = useUi((s) => s.stage === "projects" && s.phase === "world" && s.active >= 0);
   const step = useUi((s) => s.step);
@@ -116,7 +118,9 @@ function StoryRail() {
 
   const def = worlds[Math.max(0, active)];
   const p = projects[Math.max(0, active)];
-  const current = def.steps[Math.min(step, def.steps.length - 1)];
+  const local = steps[def.id];
+  const text = (i: number) => local?.[i] ?? def.steps[i];
+  const current = text(Math.min(step, def.steps.length - 1));
 
   return (
     <div
@@ -133,7 +137,7 @@ function StoryRail() {
           <li key={st.label} data-on={i === step} data-done={i < step}>
             <button type="button" onClick={() => scrollToProject(active, worldLocal(st.at))}>
               <span className="story-step-index">{String(i + 1).padStart(2, "0")}</span>
-              {st.label}
+              {text(i).label}
             </button>
           </li>
         ))}
@@ -141,12 +145,13 @@ function StoryRail() {
       <div className="story-progress">
         <span ref={fill} />
       </div>
-      <p className="eyebrow story-hint">Scroll to play · drag to look around</p>
+      <p className="eyebrow story-hint">{ui.storyHint}</p>
     </div>
   );
 }
 
 export function Outro() {
+  const { identity, ui } = useContent();
   return (
     <section id="contact" className="section outro">
       <motion.div
@@ -156,11 +161,9 @@ export function Outro() {
         viewport={{ amount: 0.5 }}
         transition={{ duration: 1, ease: EASE }}
       >
-        <p className="eyebrow">Next chapter</p>
-        <h2 className="display outro-title">Let’s build it.</h2>
-        <p className="lede">
-          Open to roles in autonomous driving / ADAS validation and robotics / embodied AI.
-        </p>
+        <p className="eyebrow">{ui.outroEyebrow}</p>
+        <h2 className="display outro-title">{ui.outroTitle}</h2>
+        <p className="lede">{ui.outroBody}</p>
         <div className="icon-row">
           <a className="icon-button" href={identity.links.email} aria-label="Email">
             <MailIcon />
@@ -173,7 +176,7 @@ export function Outro() {
           </a>
         </div>
         <button type="button" className="text-link" onClick={() => scrollToId("top")}>
-          Back to top
+          {ui.backToTop}
         </button>
       </motion.div>
     </section>

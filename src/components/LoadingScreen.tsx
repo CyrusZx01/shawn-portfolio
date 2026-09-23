@@ -4,12 +4,13 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useProgress } from "@react-three/drei";
 import { useUi } from "@/animations/store";
-import { identity } from "@/sections/content";
+import { useContent } from "@/sections/content";
 
 const EASE = [0.76, 0, 0.24, 1] as const;
 
 export function LoadingScreen() {
   const loaded = useUi((s) => s.loaded);
+  const { identity, ui } = useContent();
   const { progress } = useProgress();
   const [shown, setShown] = useState(0);
 
@@ -46,7 +47,7 @@ export function LoadingScreen() {
           exit={{ clipPath: "inset(0 0 100% 0)" }}
           transition={{ duration: 1.1, ease: EASE }}
           role="status"
-          aria-label="Loading"
+          aria-label={ui.loading}
         >
           <div className="loader-inner">
             <p className="eyebrow">

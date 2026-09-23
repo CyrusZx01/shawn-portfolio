@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { identity } from "./content";
+import { useContent } from "./content";
 import { useUi } from "@/animations/store";
 import { GithubIcon, LinkedinIcon, MailIcon } from "@/ui/icons";
 import { scrollToId } from "@/animations/scrollTo";
@@ -10,6 +10,7 @@ const EASE = [0.22, 1, 0.36, 1] as const;
 
 export function Hero() {
   const loaded = useUi((s) => s.loaded);
+  const { identity, ui } = useContent();
   const rise = (delay: number) => ({
     initial: { opacity: 0, y: 28 },
     animate: loaded ? { opacity: 1, y: 0 } : undefined,
@@ -21,7 +22,7 @@ export function Hero() {
       <div className="hero-copy">
         <h1 className="display">
           {identity.headline.split(" ").map((w, i) => (
-            <span key={w} className="display-word">
+            <span key={`${identity.headline}-${w}`} className="display-word">
               <motion.span
                 style={{ display: "inline-block" }}
                 initial={{ y: "105%" }}
@@ -51,7 +52,7 @@ export function Hero() {
           <span className="mouse" aria-hidden>
             <span className="mouse-wheel" />
           </span>
-          Scroll down
+          {ui.scrollDown}
         </motion.button>
       </div>
     </section>

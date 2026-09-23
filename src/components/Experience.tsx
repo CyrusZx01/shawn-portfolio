@@ -1,6 +1,8 @@
 "use client";
 
+import { useEffect } from "react";
 import dynamic from "next/dynamic";
+import { restoreLang } from "@/i18n/lang";
 import { Hero } from "@/sections/Hero";
 import { NewChapter } from "@/sections/NewChapter";
 import { Outro, Projects } from "@/sections/Projects";
@@ -14,6 +16,7 @@ const PortfolioScene = dynamic(() => import("@/scenes/PortfolioScene"), { ssr: f
 
 /** Fixed WebGL stage behind a normally scrolling document. */
 export function Experience() {
+  useEffect(restoreLang, []);
   return (
     <>
       <div className="scene-layer" aria-hidden>
