@@ -36,12 +36,11 @@ export function Chrome() {
             scrollToId("top");
           }}
         >
-          {identity.name}
-          <br />
-          {identity.role}
+          <span className="chrome-name-line">{identity.name}</span>
+          <span className="chrome-name-line chrome-role">{identity.role}</span>
         </a>
         <div className="chrome-top-right">
-          <span className="eyebrow">{identity.edition}</span>
+          <span className="eyebrow chrome-edition">{identity.edition}</span>
           <LangSwitch label={ui.language} />
         </div>
       </motion.header>

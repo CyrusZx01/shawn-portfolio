@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { motion } from "framer-motion";
 import { projects, useContent } from "./content";
@@ -47,6 +47,11 @@ function ProjectPanel({ index }: { index: number }) {
     s.stage !== "projects" || s.active !== index ? "hidden" : s.phase === "world" ? "world" : s.phase,
   );
   const next = projects[index + 1];
+  // phones: the card is a compact bottom sheet that expands for the full points
+  const [open, setOpen] = useState(false);
+  useEffect(() => {
+    if (state !== "world") setOpen(false);
+  }, [state]);
   return (
     <section
       className="project"
@@ -65,7 +70,7 @@ function ProjectPanel({ index }: { index: number }) {
         </p>
       </header>
 
-      <article className="project-card">
+      <article className="project-card" data-open={open}>
         <p className="eyebrow project-meta">
           <span className="project-index">{p.index}</span>
           <span>{p.kicker}</span>
@@ -85,6 +90,9 @@ function ProjectPanel({ index }: { index: number }) {
         </ul>
         {p.note && <p className="project-note">{p.note}</p>}
         <div className="project-nav">
+          <button type="button" className="text-link project-more" aria-expanded={open} onClick={() => setOpen((o) => !o)}>
+            {open ? ui.less : ui.more} <span aria-hidden>{open ? "−" : "+"}</span>
+          </button>
           {next ? (
             <button type="button" className="text-link" onClick={() => scrollToProject(index + 1)}>
               {ui.next} · {next.title} <ArrowIcon />

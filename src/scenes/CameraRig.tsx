@@ -110,6 +110,8 @@ export function CameraRig() {
       s.offset.subVectors(s.world.position, s.world.target);
       s.right.crossVectors(UP, s.offset).normalize();
       s.offset.applyAxisAngle(UP, s.orbitYaw).applyAxisAngle(s.right.applyAxisAngle(UP, s.orbitYaw), s.orbitPitch);
+      // Worlds are staged for a wide frame; on a tall screen pull back so the scene's width still fits.
+      if (portrait) s.offset.multiplyScalar(1 + Math.min(0.5, (1 - aspect) * 0.9));
       pose.position.copy(s.world.target).add(s.offset).add(s.origin);
       s.m.lookAt(pose.position, s.offset.set(0, 0, 0).add(s.world.target).add(s.origin), UP);
       pose.quaternion.setFromRotationMatrix(s.m);

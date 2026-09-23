@@ -158,6 +158,8 @@ export const uiText = {
   projectsNav: "Projects",
   stack: "Stack",
   language: "Language",
+  more: "Details",
+  less: "Less",
 };
 
 type Step = { label: string; caption: string };
@@ -194,6 +196,8 @@ const zh = {
     projectsNav: "项目",
     stack: "技术栈",
     language: "语言",
+    more: "详情",
+    less: "收起",
   } satisfies typeof uiText,
   projects: {
     homie: {

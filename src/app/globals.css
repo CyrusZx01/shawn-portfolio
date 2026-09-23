@@ -154,6 +154,12 @@ a {
 .chrome-name {
   transition: color 0.3s;
 }
+.chrome-name-line {
+  display: block;
+}
+.project-more {
+  display: none;
+}
 .chrome-name:hover {
   color: var(--fg);
 }
@@ -853,7 +859,7 @@ html[lang="zh-CN"] .display {
     right: auto;
     left: 50%;
     top: auto;
-    bottom: 18px;
+    bottom: 14px;
     transform: translateX(-50%);
     flex-direction: row;
     gap: 16px;
@@ -863,7 +869,7 @@ html[lang="zh-CN"] .display {
   }
   .project {
     align-items: flex-end;
-    padding-bottom: 64px;
+    padding-bottom: 44px;
   }
   .project-intro {
     top: auto;
@@ -872,31 +878,147 @@ html[lang="zh-CN"] .display {
     max-width: none;
     right: var(--gutter);
   }
+
+  /* project card → compact bottom sheet; "Details" expands it */
   .project-card {
     width: 100%;
-    max-height: 42svh;
-    padding: 22px 20px 20px;
+    max-height: 46svh;
+    padding: 18px 18px 14px;
+    border-radius: 18px;
+    background: rgba(20, 20, 20, 0.9);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
     transform: translateY(28px);
+    transition: opacity 0.5s var(--ease-out), transform 0.9s var(--ease-out), max-height 0.5s var(--ease-out);
+  }
+  .project-card[data-open="true"] {
+    max-height: 74svh;
+  }
+  .project-meta {
+    flex-wrap: nowrap;
+    gap: 10px;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  .project-meta > span:nth-child(2) {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .project-period {
+    flex: none;
+  }
+  .project-title {
+    font-size: 32px;
+    margin: 12px 0 8px;
+  }
+  .project-summary {
+    font-size: 14px;
+    line-height: 1.5;
   }
   .project-points {
     display: none;
+    margin-top: 14px;
   }
+  .project-card[data-open="true"] .project-points {
+    display: grid;
+  }
+  .project-points li {
+    font-size: 13px;
+  }
+  .project-stack {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    margin: 14px -18px 0;
+    padding: 0 18px;
+  }
+  .project-stack::-webkit-scrollbar {
+    display: none;
+  }
+  .project-stack li {
+    flex: none;
+    font-size: 10px;
+    padding: 4px 9px;
+  }
+  .project-note {
+    margin-top: 12px;
+    padding: 7px 10px 0;
+    /* transparent bottom border keeps the padding look while clipping the clamped lines */
+    border-bottom: 7px solid transparent;
+    font-size: 11px;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+  }
+  .project-card[data-open="true"] .project-note {
+    display: block;
+  }
+  .project-nav {
+    margin-top: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+  }
+  .project-more {
+    display: inline-flex;
+    color: var(--fg-muted);
+  }
+
+  /* story: caption + progress under the header */
   .story-rail {
     left: var(--gutter);
     right: var(--gutter);
-    top: 76px;
+    top: 72px;
     bottom: auto;
   }
   .story-caption {
     font-size: 13px;
+    line-height: 1.45;
     margin-bottom: 10px;
+    min-height: 2.9em;
   }
   .story-steps,
   .story-hint {
     display: none;
   }
-  .project-title {
-    margin: 14px 0 10px;
+}
+
+/* phones */
+@media (max-width: 600px) {
+  .chrome-top {
+    padding: 18px 0 10px;
+    align-items: center;
+  }
+  .chrome-name {
+    letter-spacing: 0.24em;
+  }
+  .chrome-role,
+  .chrome-edition {
+    display: none;
+  }
+  .timeline-card {
+    bottom: 11svh;
+    padding: 18px 18px 18px 32px;
+  }
+  .timeline-title {
+    font-size: 26px;
+  }
+  .timeline-body {
+    font-size: 14px;
+  }
+  .timeline-hint {
+    display: none;
+  }
+  .sticker-chips {
+    gap: 6px;
+  }
+  .sticker-chip {
+    font-size: 12px;
+    padding: 5px 10px;
   }
 }
 
